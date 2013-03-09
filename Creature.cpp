@@ -7,3 +7,8 @@
 //
 
 #include "Creature.h"
+
+void Creature::setActive(bool isActive)
+{
+    active = isActive;
+}

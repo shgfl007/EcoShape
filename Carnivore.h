@@ -12,6 +12,7 @@
 #include <iostream>
 #include "ofColor.h"
 #include "Creature.h"
+#include "ofMain.h"
 
 class Carnivore : public Creature {
 	
@@ -20,6 +21,9 @@ public:
     void update();
     void draw();
     void setActive(bool);
+    
+    //constructor
+    Carnivore(float x, float y, int r);
     
     //variables
     //float x; //position
@@ -30,6 +34,12 @@ public:
     //bool active;
     int hungerM; // hunger meter
     //int hp;//health point
+    
+private:
+    int speedX;
+    int speedY;
+    int width;
+    int height;
     
 };
 

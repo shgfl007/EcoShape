@@ -12,6 +12,8 @@
 #include <iostream>
 #include "ofColor.h"
 #include "Creature.h"
+#include "ofmain.h"
+
 class Plant : public Creature {
 	
 public:
@@ -19,6 +21,9 @@ public:
     void update();
     void draw();
     void setActive(bool);
+    
+    //constructor
+    Plant(float _x, float _y);
     
     //variables
     //float x; //position
@@ -29,6 +34,10 @@ public:
     //bool active;
     //int hp;//health point
     int status;
+    
+private:
+    float x1, y1,x2, y2, x3, y3;
+    
     
 };
 
