@@ -1,7 +1,46 @@
 #include "testApp.h"
+#include "Carnivore.h"
+#include "Herbivore.h"
 
 int myCircleX;
 int myCircleY;
+int countC;
+int countH;
+int countP;
+int Hrank_STANDARD = 2;
+
+
+//eat function, please keep the higher rank creature as A!!!!!!!
+void eat(Creature A, Creature B)
+{
+    if (A.rank > B.rank && A.hungerM < 3 && A.rank > Hrank_STANDARD && B.rank >0) {
+        //A is carnivore, b is either carnivore or herbivore
+        B.setActive(false);
+        
+        if (B.rank<=Hrank_STANDARD && B.rank >0) {
+            //B is a Herbivore
+            countH--;
+            A.hungerM++;
+        }
+        else {
+            // B is a Carnivore
+            countC--;
+            A.hungerM+=2;
+        }
+        
+    }
+    else if(A.rank > B.rank && A.rank<=Hrank_STANDARD && A.rank>0 && B.rank==0 && A.hungerM < 3){
+        // A is a Herbivore, B is a plant
+        B.setActive(false);
+        countP--;
+        A.hungerM++;
+    }
+    
+   
+}
+
+
+
 //--------------------------------------------------------------
 void testApp::setup(){	
 	ofSetFrameRate(60);
