@@ -12,3 +12,8 @@ void Creature::setActive(bool isActive)
 {
     active = isActive;
 }
+
+void Creature::draw()
+{
+    
+}

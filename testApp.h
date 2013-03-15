@@ -3,6 +3,10 @@
 #include "ofMain.h"
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
+#include "Carnivore.h"
+#include "Herbivore.h"
+#include "Plant.h"
+#include "Creature.h"
 
 class testApp : public ofxiPhoneApp{
 	

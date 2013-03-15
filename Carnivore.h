@@ -23,7 +23,7 @@ public:
     void setActive(bool);
     
     //constructor
-    Carnivore(float x, float y, int r);
+    Carnivore(float x, float y, int r, int h);
     
     //variables
     //float x; //position
@@ -35,7 +35,7 @@ public:
     int hungerM; // hunger meter
     //int hp;//health point
     
-private:
+//private:
     int speedX;
     int speedY;
     int width;

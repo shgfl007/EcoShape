@@ -8,7 +8,7 @@
 
 #include "Carnivore.h"
 
-Carnivore::Carnivore(float _x, float _y, int r)
+Carnivore::Carnivore(float _x, float _y, int r, int hunger)
 {
     x = _x;
     y = _y;
@@ -16,6 +16,7 @@ Carnivore::Carnivore(float _x, float _y, int r)
     width = ofRandom(40, 80);
     height = ofRandom(60, 100);
     active = true;
+    hungerM = hunger;
     
     speedX = ofRandom(-1,1);
     speedY = ofRandom(-1,1);
@@ -23,10 +24,10 @@ Carnivore::Carnivore(float _x, float _y, int r)
 
 void Carnivore::update(){
     
-    if (hungerM<3) {
+    /*if (hungerM<3) {
         width*=0.5;
         height*=0.5;
-    }
+    }*/
     
     if (width < 5 && height<5) {
         setActive(false);

@@ -16,17 +16,17 @@ Herbivore::Herbivore(float _x, float _y, int r)
     width = ofRandom(40, 80);
     height = ofRandom(60, 100);
     active = true;
-    
+    hungerM = 10;
     speedX = ofRandom(-1,1);
     speedY = ofRandom(-1,1);
 }
 
 void Herbivore::update(){
     
-    if (hungerM<3) {
+    /*if (hungerM<3) {
         width*=0.5;
         height*=0.5;
-    }
+    }*/
     
     if (width < 5 && height<5) {
         setActive(false);
