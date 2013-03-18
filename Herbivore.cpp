@@ -19,6 +19,10 @@ Herbivore::Herbivore(float _x, float _y, int r)
     hungerM = 10;
     speedX = ofRandom(-1,1);
     speedY = ofRandom(-1,1);
+    
+    color.r = 185;
+    color.g = 151;
+    color.b = 13;
 }
 
 void Herbivore::update(){
@@ -54,8 +58,9 @@ void Herbivore::update(){
 
 void Herbivore::draw(){
     if (active) {
-        ofSetColor(50*(ofRandom(0.5, 0.8)), 255, 50*(ofRandom(0.5,0.8)));
+        ofSetColor(color);
         ofRect(x, y, width, height);
+        
     }
     else
         ofRect(-100, -100, width, height);

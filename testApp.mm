@@ -10,8 +10,10 @@ int countP = 0;
 int countTotal = 0;
 int Hrank_STANDARD = 2;
 
-Carnivore *the_list[50];
-Herbivore *H_list[50];
+Carnivore *the_list[10];
+Herbivore *H_list[10];
+
+
 
 //eat function, please keep the higher rank creature as A!!!!!!!
 void eat(Creature A, Creature B)
@@ -45,16 +47,20 @@ void eat(Creature A, Creature B)
 
 
 //--------------------------------------------------------------
-void testApp::setup(){	
-	ofSetFrameRate(60);
-    // initialize the accelerometer
-	ofxAccelerometer.setup();
+void testApp::setup(){
+	
+    ofRegisterTouchEvents(this);
+    ofxAccelerometer.setup();
+    ofxiPhoneAlerts.addListener(this);
+	ofSetFrameRate(30);
+
+    
 	myCircleX=300;
     myCircleY = 200;
 	//If you want a landscape oreintation 
 	//iPhoneSetOrientation(OFXIPHONE_ORIENTATION_LANDSCAPE_RIGHT);
 	
-	ofBackground(127,127,127);
+	ofBackgroundHex(0x8c8377);
     ofxMultiTouch.addListener(this);
     Carnivore *test = new Carnivore(200,300,5,5);
     the_list[0] = test;
@@ -62,21 +68,44 @@ void testApp::setup(){
     Herbivore *test0 = new Herbivore(100,100,2);
     H_list[0] = test0;
     countP++;
+    
+    //add-on testing
+    
+    box2d.init();
+    box2d.setGravity(0, 10);
+    box2d.setFPS(60);
+    box2d.registerGrabbing();
+    box2d.createBounds();
+    box2d.setIterations(1, 1); // minimum for IOS
+    
+    for (int i=0; i<10; i++) {
+        ofxBox2dCircle c;
+        c.setPhysics(1, 0.4, 0.4);
+        c.setup(box2d.getWorld(), ofRandomWidth(), ofRandomHeight(), ofRandom(13, 25));
+        circles.push_back(c);
+    }
+    //add-on testing ends here
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-    myCircleX+=4;
-    if(myCircleX>1024)
-    {
-        myCircleX=300;
-    }
+
     for(int i = 0; i< countTotal; i++)
     {(*the_list[i]).update();}
     for (int i = 0; i < countP; i++) {
         //(*P_list[i]).update();
     }
     
+    //add-on testing
+    //ofVec2f gravity = ofxAccelerometer.getForce();
+    //gravity.y *= -1;
+    //gravity *= 30;
+    //box2d.setGravity(gravity);
+    
+    box2d.update();
+    //add-on testing ends here
+    
+    countTotal = countP + countH + countC;
 
 }
 
@@ -109,6 +138,16 @@ void testApp::draw(){
         H_list[i]->draw();
     }
     
+    //add-on testing
+    ofSetHexColor(0xABDB44);
+    for(vector<ofxBox2dCircle>::iterator it = circles.begin(); it != circles.end(); ++it) {
+        it->draw();
+    }
+    
+    ofSetColor(90);
+    ofDrawBitmapString("double tap to add more", 20, 30);
+    ofDrawBitmapString(ofToString(ofGetFrameRate(), 0)+" fps", 20, 50);
+    //add-on testing ends here
 
 }
 
@@ -132,11 +171,11 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
 
 //--------------------------------------------------------------
 void testApp::touchUp(ofTouchEventArgs & touch){
-    Herbivore *testC = new Herbivore(touch.x,touch.y,1);
+    /*Herbivore *testC = new Herbivore(touch.x,touch.y,1);
     ofLog(OF_LOG_VERBOSE, "touch down at (%d,%d)",touch.x,touch.y);
     countH++;
     
-    H_list[countH-1] = testC;
+    H_list[countH-1] = testC;*/
 
 }
 
@@ -147,6 +186,13 @@ void testApp::touchDoubleTap(ofTouchEventArgs & touch){
     countC++;
     countTotal++;
     the_list[countTotal-1] = testC;
+    
+    //add -on testing
+    /*ofxBox2dCircle c;
+    c.setPhysics(1, 0.4, 0.4);
+    c.setup(box2d.getWorld(), touch.x, touch.y, ofRandom(13, 25));
+    circles.push_back(c);*/
+    //add-on testing ends here
 }
 
 //--------------------------------------------------------------

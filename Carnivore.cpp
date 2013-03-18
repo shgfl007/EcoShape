@@ -17,9 +17,20 @@ Carnivore::Carnivore(float _x, float _y, int r, int hunger)
     height = ofRandom(60, 100);
     active = true;
     hungerM = hunger;
+    //ofColor color;
+    color.r = 196;
+    color.g = 44;
+    color.b = 0;
     
     speedX = ofRandom(-1,1);
     speedY = ofRandom(-1,1);
+    
+    /*ofxBox2dRect rect;
+    rect.setPhysics(1, 1, 1);
+    ofRectangle _rect;
+    _rect.x = x; _rect.y = y; _rect.width = width; _rect.height = height;    
+    rect.setup(box2d.getWorld(), _rect);
+    rects.push_back(rect);*/
 }
 
 void Carnivore::update(){
@@ -55,8 +66,10 @@ void Carnivore::update(){
 
 void Carnivore::draw(){
     if (active) {
-    ofSetColor(255, 50*(ofRandom(0.5, 0.8)), 50*(ofRandom(0.5,0.8)));
+        ofSetColor(color);
         ofRect(x, y, width, height);
+
+        
     }
     else
         ofRect(-100, -100, width, height);

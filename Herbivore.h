@@ -40,6 +40,7 @@ private:
     int speedY;
     int width;
     int height;
+    ofColor color;
     
 };
 

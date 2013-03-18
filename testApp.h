@@ -3,10 +3,12 @@
 #include "ofMain.h"
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
+#include "ofxBox2d.h"
 #include "Carnivore.h"
 #include "Herbivore.h"
 #include "Plant.h"
 #include "Creature.h"
+#include "stack.h"
 
 class testApp : public ofxiPhoneApp{
 	
@@ -26,6 +28,9 @@ class testApp : public ofxiPhoneApp{
         void gotFocus();
         void gotMemoryWarning();
         void deviceOrientationChanged(int newOrientation);
+    
+    ofxBox2d box2d;
+    vector<ofxBox2dCircle> circles;
 
 };
 

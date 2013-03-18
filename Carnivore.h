@@ -13,6 +13,7 @@
 #include "ofColor.h"
 #include "Creature.h"
 #include "ofMain.h"
+#include "ofxBox2d.h"
 
 class Carnivore : public Creature {
 	
@@ -35,11 +36,14 @@ public:
     int hungerM; // hunger meter
     //int hp;//health point
     
+    ofxBox2d box2d;
+    vector<ofxBox2dRect> rects;
 //private:
     int speedX;
     int speedY;
     int width;
     int height;
+    ofColor color;
     
 };
 
