@@ -4,12 +4,8 @@
 #include "ofxiPhone.h"
 #include "ofxiPhoneExtras.h"
 #include "ofxBox2d.h"
-#include "Carnivore.h"
-#include "Herbivore.h"
-#include "Plant.h"
-#include "Creature.h"
 #include "stack.h"
-
+#include <stack>
 class testApp : public ofxiPhoneApp{
 	
     public:
@@ -31,7 +27,9 @@ class testApp : public ofxiPhoneApp{
     
     ofxBox2d box2d;
     vector<ofxBox2dCircle> circles;
-
+    vector<ofPolyline> curves;
+    //vector<Carnivore> carnivores;
+    //stack<Carnivore> Cs;
 };
 
 
