@@ -189,7 +189,7 @@ void testApp::update(){
     vector<ofxBox2dPolygon> _tempP;
     
     //---------------collision detect and eat herbivores and plants---------------------
-    for (vector<ofxBox2dCircle>::iterator it = herbivores.begin(); it!=herbivores.end(); ++it) {
+    /*for (vector<ofxBox2dCircle>::iterator it = herbivores.begin(); it!=herbivores.end(); ++it) {
         for (vector<ofxBox2dPolygon>::iterator it2 = plants.begin(); it2!=plants.end(); ++it2) {
             bool isTouching = bodiesAreTouching(it->body, it2->body);
             if (isTouching) {
@@ -206,7 +206,7 @@ void testApp::update(){
             countP--;
         }else _tempPHEat.push_back(*it);
     }
-    plants = _tempPHEat;
+    plants = _tempPHEat;*/
 
     //---------------collision detect and eat herbivores and carnivores---------------------
     for (vector<ofxBox2dCircle>::iterator it = herbivores.begin(); it!=herbivores.end(); ++it) {
@@ -299,6 +299,9 @@ void testApp::update(){
     
     countTotal = countP + countH + countC;
     
+    //--------------------Environment part 3-----------------------------
+    
+    //background change
     if(countTotal > 20 && r > 150 && g > 150 && b > 150 )
     {
         r--;g--;b--;
@@ -307,7 +310,18 @@ void testApp::update(){
     {
         r--;g--;b--;
     }
+    //changing back
+    if(countTotal < 30 && r <160 && g < 160 && b < 160)
+    {
+        r++; g++; b++;
+    }
+    if(countTotal < 20 && r < 255 && g < 255 && b < 255)
+    {
+        r++; g++; b++;
+    }
     
+    //top first layer
+    //int fr = 200; int fg = 241; int fb = 70;
     if(countTotal > 20 && fb <=200 )
     {
         fb+=2;
@@ -316,15 +330,38 @@ void testApp::update(){
     {
         fr++;fb++;
     }
+    //changing back
+    if(countTotal < 30 && fr >= 200 && fb >= 200 )
+    {
+        fr--;fb--;
+    }
+    if(countTotal < 20 && fb >= 75 )
+    {
+        fb-=2;
+    }
     
+    
+    //top second layer
+    //int sr = 146; int sg = 196; int sb=109;
     if(countTotal > 20 && sr <=160 && sb <= 160 )
     {
         sr++;sb+=3;
     }
     if(countTotal > 30 && sr <= 196 && sb <= 196 )
     {
-        sr++;sb+=3;
+        sr++;sb++;
     }
+    if(countTotal < 30 && sr >= 163 && sb >= 163 )
+    {
+        sr--;sb--;
+    }
+    if(countTotal < 20 && sr > 146 && sb > 109 )
+    {
+        sr--;sb-=3;
+    }
+    
+    //top third layer
+    //int tr = 40; int tg = 126; int tb = 125;
     
     if(countTotal > 20 && tr <=80)
     {
@@ -334,6 +371,17 @@ void testApp::update(){
     {
         tr++;
     }
+    if(countTotal < 30 && tr > 80)
+    {
+        tr--;
+    }
+    if(countTotal < 20 && tr > 40)
+    {
+        tr--;
+    }
+    
+    //top fourth layer
+    //int fourr = 35; int fourg = 73; int fourb = 111;
     
     if(countTotal > 20 && fourr < 90 && fourg <90)
     {
@@ -343,6 +391,17 @@ void testApp::update(){
     {
         fourr+=2; fourg++;
     }
+    if(countTotal < 30 && fourr > 90 && fourg > 90)
+    {
+        fourr-=2; fourg--;
+    }
+    if(countTotal < 20 && fourr > 35 && fourg > 73)
+    {
+        fourr-=2; fourg--;
+    }
+    
+    //top fifth layer
+    //int fiver = 35; int fiveg = 91; int fiveb = 147;
     
     if(countTotal > 20 && fiver < 90 )
     {
@@ -352,6 +411,17 @@ void testApp::update(){
     {
         fiver++; fiveg++;
     }
+    if(countTotal < 30 && fiver > 90 )
+    {
+        fiver--; fiveg--;
+    }
+    if(countTotal < 20 && fiver > 35)
+    {
+        fiver-=2;
+    }
+    
+    //top sixth layer
+    //int sixr = 23; int sixg=182; int sixb = 211;
     
     if(countTotal > 20 && sixr < 182 )
     {
@@ -361,6 +431,17 @@ void testApp::update(){
     {
         sixr++; sixg++;
     }
+    if(countTotal < 30 && sixr > 182 )
+    {
+        sixr--; sixg--;
+    }
+    if(countTotal < 20 && sixr > 23)
+    {
+        sixr-=2;
+    }
+    
+    //top seventh layer
+    //int sevenr =4; int seveng = 216; int sevenb= 255;
     if(countTotal > 20 && sevenr < 216 )
     {
         sevenr+=2;
@@ -369,7 +450,14 @@ void testApp::update(){
     {
         sevenr++; seveng++;
     }
-    
+    if(countTotal < 30 && sevenr > 216 )
+    {
+        sevenr--; seveng--;
+    }
+    if(countTotal < 20 && sevenr > 4)
+    {
+        sevenr-=2;
+    }
     
     //add 0.029 to our counter
     counter = counter + 0.010f;
@@ -380,6 +468,9 @@ void testApp::update(){
     counter6 += 0.035f;
     
     counter7 += 0.040f;
+    
+    //--------------------Environment part 3 ends-----------------------------
+    
     
 }
 
