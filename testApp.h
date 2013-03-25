@@ -6,6 +6,15 @@
 #include "ofxBox2d.h"
 #include "stack.h"
 #include <stack>
+
+#define N_SOUNDS 5
+
+class SoundData {
+public:
+    int soundID;
+    bool bHit;
+};
+
 class testApp : public ofxiPhoneApp{
 	
     public:
@@ -24,10 +33,16 @@ class testApp : public ofxiPhoneApp{
         void gotFocus();
         void gotMemoryWarning();
         void deviceOrientationChanged(int newOrientation);
+        void contactStart(ofxBox2dContactArgs &e);
+        void contactEnd(ofxBox2dContactArgs &e);
+    
     
     ofxBox2d box2d;
     vector<ofxBox2dCircle> circles;
     vector<ofPolyline> curves;
+    
+    //sound objs
+    ofSoundPlayer sound[N_SOUNDS];
     //vector<Carnivore> carnivores;
     //stack<Carnivore> Cs;
 };

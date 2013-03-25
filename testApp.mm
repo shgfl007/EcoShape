@@ -20,7 +20,7 @@ void eat(ofxBox2dBaseShape A, ofxBox2dBaseShape B)
 {
     if (A.rank > B.rank && A.hungerM < 3 && A.rank > Hrank_STANDARD && B.rank >0) {
         //A is carnivore, b is either carnivore or herbivore
-        B.alive = false;
+        B.exist = false;
         
         if (B.rank<=Hrank_STANDARD && B.rank >0) {
             //B is a Herbivore
@@ -36,14 +36,26 @@ void eat(ofxBox2dBaseShape A, ofxBox2dBaseShape B)
     }
     else if(A.rank > B.rank && A.rank<=Hrank_STANDARD && A.rank>0 && B.rank==0 && A.hungerM < 3){
         // A is a Herbivore, B is a plant
-        B.alive = false;
+        B.exist = false;
         countP--;
         A.hungerM++;
     }
     
    
 }
+//--------------------------------------------------------------
 
+bool bodiesAreTouching(b2Body* body1, b2Body* body2){
+    for (b2ContactEdge* edge = body1->GetContactList(); edge; edge=edge->next) {
+        if ( !edge->contact->IsTouching() )
+			continue;
+		b2Body* bA = edge->contact->GetFixtureA()->GetBody();
+		b2Body* bB = edge->contact->GetFixtureB()->GetBody();
+		if ( ( bA == body1 && bB == body2 ) || ( bB == body1 && bA == body2 ) )
+			return true;
+    }
+    return false;
+}
 
 
 //--------------------------------------------------------------
@@ -64,7 +76,7 @@ void testApp::setup(){
     ofxMultiTouch.addListener(this);
 
     
-    //add-on testing
+    
     
     box2d.init();
     box2d.setGravity(0, 0.1);
@@ -73,37 +85,128 @@ void testApp::setup(){
     box2d.createBounds();
     box2d.setIterations(1, 1); // minimum for IOS
     
-    for (int i=0; i<10; i++) {
-        ofxBox2dCircle c;
-        c.setPhysics(1, 0.4, 0.4);
-        c.setup(box2d.getWorld(), ofRandomWidth(), ofRandomHeight(), ofRandom(13, 25));
-        circles.push_back(c);
+    //register the listener so that we get the events
+    ofAddListener(box2d.contactStartEvents, this, &testApp::contactStart);
+    ofAddListener(box2d.contactEndEvents, this, &testApp::contactEnd);
+    
+    //load sound
+    for (int i=0; i<N_SOUNDS; i++) {
+        
+        sound[i].loadSound("sfx/" + ofToString(i)+ ".mp3");
+        sound[i].setMultiPlay(true);
+        sound[i].setLoop(false);
     }
-    //add-on testing ends here
+}
+
+//----------------------------------------------------------------------
+
+void testApp::contactStart(ofxBox2dContactArgs &e){
+    if (e.a != NULL && e.b != NULL) {
+        
+        //two carnivores
+        if (e.a->GetType() == b2Shape::e_circle && e.b->GetType() == b2Shape::e_circle) {
+            if (e.a->GetBody()->GetUserData()) {
+                
+                SoundData * aData = (SoundData*)e.a->GetBody()->GetUserData();
+                SoundData * bData = (SoundData*)e.b->GetBody()->GetUserData();
+                
+                if (aData) {
+                    aData->bHit = true;
+                    sound [aData->soundID].play();
+                }
+                
+                if (bData) {
+                    bData->bHit = true;
+                    sound[bData->soundID].play();
+                }
+            }
+        }
+        
+        
+    }
+}
+
+//--------------------------------------------------------------
+
+void testApp::contactEnd(ofxBox2dContactArgs &e){
+    if (e.a != NULL && e.b !=NULL) {
+        SoundData * aData = (SoundData*)e.a->GetBody()->GetUserData();
+        SoundData * bData = (SoundData*)e.b->GetBody()->GetUserData();
+        
+        if (aData) {
+            aData->bHit = false;
+        }
+        
+        if (bData) {
+            bData->bHit = false;
+        }
+    }
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-
  
     
     //add-on testing
     ofVec2f gravity = ofxAccelerometer.getForce();
-    //gravity.y *= ( -1 * ofRandom(-1,1));
-    //gravity.x *= (-1 * ofRandom(-1,1));
+
     
     gravity *= 5;
 
     box2d.setGravity(gravity);
     box2d.update();
-    //add-on testing ends here
+    
+    vector<ofxBox2dRect> _tempC;
+    vector<ofxBox2dCircle> _tempH;
+    vector<ofxBox2dPolygon> _tempP;
+    
+    for (vector<ofxBox2dRect>::iterator it = carnivores.begin(); it!=carnivores.end(); ++it) {
+        for (vector<ofxBox2dRect>::iterator it2 = carnivores.begin(); it2!=carnivores.end(); ++it2) {
+            if(it->getB2DPosition()== it2->getB2DPosition())
+            {
+                if (it->rank>it2->rank) {
+                    eat(*it, *it2);
+                }else eat(*it2, *it);
+                
+            }
+            
+        }
+        
+    }
+    
+    
     for(vector<ofxBox2dRect>::iterator it = carnivores.begin(); it != carnivores.end(); ++it) {
-        it->hungerM-=0.5;
+        it->hungerM-=0.0000000005;
+        if(it->hungerM==0)it->exist=false;
+        if (it->exist==false) {
+            it->destroy();
+            countC--;
+        }else _tempC.push_back(*it);
     }
     
     for(vector<ofxBox2dCircle>::iterator it = herbivores.begin(); it != herbivores.end(); ++it) {
-        it->hungerM-=0.5;
+        it->hungerM-=0.0000000005;
+        if(it->hungerM==0)it->exist=false;
+        if (it->exist==false) {
+            it->destroy();
+            countH--;
+        }else _tempH.push_back(*it);
     }
+    
+    for(vector<ofxBox2dPolygon>::iterator it = plants.begin(); it != plants.end(); ++it) {
+        it->hungerM-=0.0000000005;
+        if(it->hungerM==0)it->exist=false;
+        if (it->exist==false) {
+            it->destroy();
+            countP--;
+        }else _tempP.push_back(*it);
+    }
+   
+    
+    
+    carnivores = _tempC;
+    herbivores = _tempH;
+    plants = _tempP;
     
     countTotal = countP + countH + countC;
 
@@ -126,21 +229,28 @@ void testApp::draw(){
         else if(it->rank == 4){
             ofSetHexColor(0x8E0B00);
         }
-        it->draw();
+        SoundData * data = (SoundData*)it->getData();
+        if (data && data->bHit) {
+            ofSetHexColor(0xff0000);
+        }
+            it->draw();
+        
     }
+    
+
     
     ofSetHexColor(0xCFDB79);
     for(vector<ofxBox2dCircle>::iterator it = herbivores.begin(); it != herbivores.end(); ++it) {
-        it->draw();
+            it->draw();
     }
-    
+
     ofSetHexColor(0x27855E);
-    ofFill();
+    /*ofFill();
     for(int i = 0; i<curves.size(); i++)
     {
         curves[i].draw();
-        
-    }
+     
+    }*/
     for (int i = 0; i < plants.size(); i++) {
         plants[i].draw();
     }
@@ -170,17 +280,14 @@ void testApp::touchDown(ofTouchEventArgs & touch){
     
     if (touch.id == 2) {
         curves.push_back(ofPolyline());
-        curves.back().addVertex(touch.x,touch.y);
+        curves.back().addVertex(touch.x,touch.y);        
     }
 
 }
 
 //--------------------------------------------------------------
 void testApp::touchMoved(ofTouchEventArgs & touch){
-    /*ofxBox2dCircle h;
-    h.setPhysics(0.1, 0.4, 1);
-    h.setup(box2d.getWorld(), touch.x, touch.y, ofRandom(10,15));
-    herbivores.push_back(h);*/
+
     if (touch.id == 2) {
         curves.back().addVertex(touch.x, touch.y);
     }
@@ -188,10 +295,7 @@ void testApp::touchMoved(ofTouchEventArgs & touch){
 
 //--------------------------------------------------------------
 void testApp::touchUp(ofTouchEventArgs & touch){
-    /*ofxBox2dPolygon p;
-    p.setPhysics(0.1, 0.4, 1);
-    p.setup(box2d.getWorld());
-    plant.push_back(p);*/
+
 
     if (touch.id == 2) {
         ofxBox2dPolygon plant;
@@ -203,6 +307,7 @@ void testApp::touchUp(ofTouchEventArgs & touch){
         
         plant.create(box2d.getWorld());
         plants.push_back(plant);
+        countP++;
     }
 
 }
